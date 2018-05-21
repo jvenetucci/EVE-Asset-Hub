@@ -1,5 +1,5 @@
 module.exports = function(server, db) {
-    server.get('/authorize', (req, res) => {
-        res.send('This is the authorize endpoint')
+    server.get('/callback', (req, res) => {
+        res.send('This is the callback endpoint')
       });
 };
