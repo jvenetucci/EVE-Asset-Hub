@@ -4,40 +4,13 @@
     <meta charset="utf-8" />
     <title>EVE Asset Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <script src="login.js"></script> -->
-    <script type="text/javascript">
-        function getCharacters() {
-            var request = new XMLHttpRequest();
-            request.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.response)
-                    var x = JSON.parse(this.responseText)
-                    document.getElementById("currentChar").innerHTML = x.Name
-                    document.getElementById("characterID").innerHTML = x.ID
-                }
-            };
-            request.open("GET", "http://localhost:3001/getCharacters")
-            request.send()
-        }
-
-        function getItems() {
-            var request = new XMLHttpRequest();
-            request.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.response)
-                    var x = JSON.parse(this.responseText)
-                }
-            };
-            request.open("GET", "http://localhost:3001/getItems")
-            request.send()
-        }
-    </script>
+    <script text="text/javascript" src="./login.js"></script>        
 </head>
 <body>
     <h1>EVE Asset Hub</h1>
     <input type="button" onclick="location.href='https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=http://localhost:3001/callback&client_id=568abab7ba4d4785b5b165db550952ac&scope=characterWalletRead%20characterAssetsRead%20esi-wallet.read_character_wallet.v1%20esi-assets.read_assets.v1'" value="Add Character">
     <input type="button" onclick="getCharacters()" value="View Characters">
-    <input type="button" onclick="viewItems()" value="View Items">
+    <input type="button" onclick="getItems()" value="View Items">
     <table>
         <tr>
             <th>Name</th>

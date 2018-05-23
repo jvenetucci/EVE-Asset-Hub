@@ -13,6 +13,8 @@ var characterName = "None"
 
 // require('./routes')(server, {});
 
+server.use(express.static(__dirname + '/public'))
+
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 })
@@ -23,8 +25,20 @@ server.get('/getCharacters', (req, res) => {
         "Name":characterName
     }
     res.send(data)
-    // res.sendFile(path.join(__dirname + '/public/index.html'));
 })
+
+server.get('/getItems', (req, res) => {
+    var address = "https://esi.evetech.net/latest/characters/" + characterId + "/assets/?datasource=tranquility&page=1&token=" + accessToken
+    request.get({
+        url: address
+    }, (err, response, responseBody) => {
+        if (err) {
+            return console.log("ERROR: \n" + err)
+        } else {
+            res.send(JSON.parse(responseBody))
+        }
+    })
+});
 
 server.get('/login', (req, res) => {
     res.send('This is the login endpoint')
