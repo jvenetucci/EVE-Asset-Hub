@@ -11,8 +11,6 @@ var accessToken = 0;
 var characterId = "None";
 var characterName = "None"
 
-// require('./routes')(server, {});
-
 server.use(express.static(__dirname + '/public'))
 
 server.get('/', (req, res) => {
@@ -35,7 +33,9 @@ server.get('/getItems', (req, res) => {
         if (err) {
             return console.log("ERROR: \n" + err)
         } else {
-            res.send(JSON.parse(responseBody))
+            var itemList = JSON.parse(responseBody);
+            // convertItemIDtoNames(itemList);
+            res.json(itemList)
         }
     })
 });
@@ -90,3 +90,20 @@ server.get('/hello', (req, res) => {
 server.listen(port, () => {
     console.log("Running on Port " + port)
 })
+
+// function convertItemIDtoNames(itemList) {
+//     console.log(itemList)
+//     for(var i = 0; i < itemList.length - 1; i++) {
+//         var address = 'https://esi.evetech.net/latest/universe/types/' + itemList[i].type_id + '/?datasource=tranquility&language=en-us'
+
+//         request.get({
+//             url: address
+//         }, (err, response, responseBody) => {
+//             if (err) {
+//                 return console.log("Error getting item info:\n" + err)
+//             } else {
+//                 itemList[i].type_id = JSON.parse(responseBody).name
+//             }
+//         })
+//     }
+// }
