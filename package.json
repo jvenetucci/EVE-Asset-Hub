@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/EVEPotatoPotaato/EVE-Asset-Hub#readme",
   "dependencies": {
-    "eve-sso-simple": "^2.0.1",
     "express": "^4.16.3",
     "request": "^2.86.0"
   }
