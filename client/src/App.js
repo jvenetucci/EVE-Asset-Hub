@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
 import './App.css';
 import AddCharacterButton from './buttons'
+import axios from "axios";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      characters: [],
+      itemList: []
+    }
+  }
+
+  async componentWillMount() {
+    await this.getCharacters();
+    await this.getItems();
+    console.log(this.state)
+  }
+
   render() {
     return (
       <div className="App">
@@ -10,6 +25,24 @@ class App extends Component {
       </div>
     );
   }
+
+  async getCharacters() {
+    var res = await axios({
+        method: 'get',
+        url: '/getCharacters'
+    })
+    this.state.characters = res.data;
+  }
+
+  async getItems() {
+    var res = await axios({
+      method: 'get',
+      url: '/getItems'
+  })
+  this.state.itemList = (res.data)
+  }
 }
+
+  
 
 export default App;
