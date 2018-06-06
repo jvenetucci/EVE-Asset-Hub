@@ -4,7 +4,6 @@ import Item from './Item';
 class ItemTable extends Component {
 
   render() {
-    var indexCount = -1;
 
     return (
       <div className="ItemTable">
@@ -18,7 +17,7 @@ class ItemTable extends Component {
               <th>Location Type</th>
               <th>Owner</th>
             </tr>
-            {this.props.itemList.map(item => (<Item key={++indexCount} item={item}/>))}
+            {this.props.itemList.map(((item, index) => (<Item key={index} item={item}/>)))}
           </tbody>
         </table>
       </div>
