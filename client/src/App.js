@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import AddCharacterButton from './buttons'
+import ItemTable from './components/ItemTable'
 import axios from "axios";
 
 class App extends Component {
@@ -15,13 +16,14 @@ class App extends Component {
   async componentWillMount() {
     await this.getCharacters();
     await this.getItems();
-    console.log(this.state)
+    this.setState(this.state);
   }
 
   render() {
     return (
       <div className="App">
         <AddCharacterButton />
+        <ItemTable itemList={this.state.itemList}/>
       </div>
     );
   }
