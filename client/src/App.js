@@ -17,13 +17,26 @@ class App extends Component {
     await this.getCharacters();
     await this.getItems();
     this.setState(this.state);
+    this.render();
   }
 
   render() {
     return (
       <div className="App">
-        <AddCharacterButton />
-        <ItemTable itemList={this.state.itemList}/>
+        <div className="Header">
+          <h1 id="title">EVE Asset Hub</h1>
+        </div>
+
+        <div className="MainContent">
+          <div className="ToolBar">
+            <AddCharacterButton />
+          </div>
+          <ItemTable itemList={this.state.itemList}/>
+        </div>
+
+        <div className="Footer">
+          Potato Potaato - 2018 - Licensed under the MIT License
+        </div>
       </div>
     );
   }

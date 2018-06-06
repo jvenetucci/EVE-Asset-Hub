@@ -1,0 +1,50 @@
+body {
+    background-color: grey
+}
+
+.Header {
+    background-color: #222;
+    height: 100px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.Footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #222;
+    color: white;
+    text-align: center;
+    font-size: 90%;
+}
+
+
+.AddCharButton {
+    border: 3px solid black;
+    padding: 5px;
+    display: inline;
+    background-color: grey;
+    margin: 2px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+#title {
+    font-size: 250%;
+    margin-left: 40px;
+    color: white;
+}
+
+.ItemTable {
+    width: 100%;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid black
+}
