@@ -10,11 +10,11 @@ const port = 3001;
 require('./routes/index')(server);
 require('./routes/route')(server);
 
-var accessToken = 0;
-var characterId = "None";
-var characterName = "None";
+var characters = []
+var itemList = []
 
-var characters = {}
+var typeIDDictionary = new Map();
+var locationIDDictionary = new Map();
 
 server.use(express.static(__dirname + '/public'));
 // server.use(cors());
@@ -23,49 +23,11 @@ server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 })
 
-server.get('/getCharacters', (req, res) => {
-    var data = {
-        "ID":characterId,
-        "Name":characterName
-    }
-    res.send(data);
-})
-
-
-server.get('/getItems', (req, res) => {
-    var address = "https://esi.evetech.net/latest/characters/" + characterId + "/assets/?datasource=tranquility&page=1&token=" + accessToken
-    request.get({
-        url: address
-    }, (err, response, responseBody) => {
-        if (err) {
-            return console.log("ERROR: \n" + err)
-        } else {
-            var itemList = JSON.parse(responseBody);
-            // convertItemIDtoNames(itemList);
-            res.json(itemList)
-        }
-    })
-});
-
-server.get('/login', (req, res) => {
-    // res.redirect('https://login.eveonline.com/oauth/authorize?response_type=code&redirect_uri=http://localhost:3001/callback&client_id=568abab7ba4d4785b5b165db550952ac&scope=characterWalletRead%20characterAssetsRead%20esi-wallet.read_character_wallet.v1%20esi-assets.read_assets.v1')
-    // res.send("HELLO")
-});
-
-// async function getTokens(AuthCode) {
-
-
-//     return response.data
-// }
 server.get('/callback', async (req, res) => {
-    // console.log("Auth Code: " + req.query.code)
-    // getAccessToken(req.query.code).then(response => {})
-    // var x = await getTokens(req.query.code)
     var body = {
         "grant_type":"authorization_code",
         "code":req.query.code
     }
-
     var AuthHeader = 'Basic NTY4YWJhYjdiYTRkNDc4NWI1YjE2NWRiNTUwOTUyYWM6N2RBMjFHdDN3ZlhJWE1ESDBLbXkwbzU0aExFYU1lUDF0NGpPM3FiNw==';
 
     try {
@@ -77,12 +39,10 @@ server.get('/callback', async (req, res) => {
         })
     } catch(err) {
         console.log(err)
-    }  
+    }
 
     var tokens = response.data;
 
-
-    
     try {
         response = await axios({
             method: 'get',
@@ -93,61 +53,132 @@ server.get('/callback', async (req, res) => {
         console.log(err)
     }
 
-    console.log(response.data)
-
-    characters[response.data.CharacterName] = {
+    var charObject = {
         "Name": response.data.CharacterName,
         "ID": response.data.CharacterID,
         "AccessToken": tokens.access_token
     }
+
+    characters.push(charObject)
+    console.log("Added the following character: ");
+    console.log(charObject)
+
+    console.log("Characters now include: ");
     console.log(characters)
-    // request.post({
-    //     url: 'https://login.eveonline.com/oauth/token',
-    //     body: bodyJSONString,
-    //     headers: {'Content-Type':'application/json', 'Authorization':AuthHeader}
-    // },  (err, response, responseBody) => {
-    //     if (err) {
-    //         return console.log("Recieved Error:\n" + err)
-    //     } else {
-    //         console.log("Received status code: %d", response.statusCode)
-    //         console.log(JSON.parse(responseBody))
-    //         accessToken = JSON.parse(responseBody).access_token
-    //         console.log(accessToken)
-    //         request.get({
-    //             url: 'https://login.eveonline.com/oauth/verify',
-    //             headers: {'Authorization':'Bearer ' + accessToken}
-    //         }, (err, response, responseBody) => {
-    //             if (err) {
-    //                 return console.log("Problem with getting Char Name: \n" + err)
-    //             } else {
-    //                 var responseBody = JSON.parse(responseBody)
-    //                 characterId = responseBody.CharacterID
-    //                 characterName = responseBody.CharacterName
-    //                 res.redirect('/')
-    //             }
-    //         })
-    //     }
-    // })
+    
+    await grabItems()
     res.redirect('http://localhost:3000')
 });
 
-server.listen(port, () => {
-    console.log("Running on Port " + port)
+async function grabItems() {
+    itemList = [];
+    characters.forEach(async x => {
+        var address = "https://esi.evetech.net/latest/characters/" + x.ID + "/assets/?datasource=tranquility&page=1&token=" + x.AccessToken
+
+        res = await axios({
+            method: 'get',
+            url: address
+        })
+
+        items = res.data;
+        items.forEach(async item => {
+
+            var owner = x.Name;
+
+            var itemName = typeIDDictionary.get(item.type_id);
+            if (itemName == undefined) {
+                await lookupTypeID(item.type_id);
+                itemName = typeIDDictionary.get(item.type_id)
+            }
+            var quantity = item.quantity;
+
+            var locFlag = item.location_flag;
+            var locType = item.location_type;
+            var locName = locationIDDictionary.get(item.location_id);
+            if (locName == undefined) {
+                if (locType == 'station') {
+                    await lookupStationID(item.location_id);
+                    locName = locationIDDictionary.get(item.location_id);
+                } else if (locType == 'solar_system') {
+                    await lookupSolarID(item.location_id);
+                    locName = locationIDDictionary.get(item.location_id);
+                } else {
+                    locName = "N/A"
+                }
+            }
+
+            itemObject = {
+                "Owner": owner,
+                "Name": itemName,
+                "Quantity": quantity,
+                "LocFlag": locFlag,
+                "LocType": locType,
+                "LocName": locName
+            }
+            itemList.push(itemObject);
+        })
+        console.log("Successfully grabbed asset list for " + characters.length + " character(s)");
+    })
+}
+
+async function lookupTypeID(typeID) {
+    var address = "https://esi.evetech.net/latest/universe/types/" + typeID + "/?datasource=tranquility&language=en-us"
+
+    try {
+        res = await axios({
+            method: 'get',
+            url: address
+        })
+    } catch (err) {
+        console.log(err)
+    }
+
+    typeIDDictionary.set(typeID, res.data.name)
+}
+
+async function lookupSolarID(locationID) {
+    var address = "https://esi.evetech.net/latest/universe/systems/" + locationID + "/?datasource=tranquility&language=en-us/"
+
+    try {
+        res = await axios({
+            method: 'get',
+            url: address
+        })
+    } catch (err) {
+        console.log(err)
+    }
+
+    locationIDDictionary.set(locationID, res.data.name)
+}
+
+async function lookupStationID(locationID) {
+    var address = "https://esi.evetech.net/latest/universe/stations/" + locationID + "/?datasource=tranquility"
+
+    try {
+        res = await axios({
+            method: 'get',
+            url: address
+        })
+    } catch (err) {
+        console.log(err)
+    }
+
+    locationIDDictionary.set(locationID, res.data.name)
+}
+
+server.get('/getCharacters', (req, res) => {
+    res.send(characters);
 })
 
-// function convertItemIDtoNames(itemList) {
-//     console.log(itemList)
-//     for(var i = 0; i < itemList.length - 1; i++) {
-//         var address = 'https://esi.evetech.net/latest/universe/types/' + itemList[i].type_id + '/?datasource=tranquility&language=en-us'
+server.get('/getItems', (req, res) => {
+    res.send(itemList);
+})
 
-//         request.get({
-//             url: address
-//         }, (err, response, responseBody) => {
-//             if (err) {
-//                 return console.log("Error getting item info:\n" + err)
-//             } else {
-//                 itemList[i].type_id = JSON.parse(responseBody).name
-//             }
-//         })
-//     }
-// }
+server.get('/refresh', async (req, res) => {
+    await grabItems();
+    console.log("Refreshed Item List");
+})
+
+server.listen(port, () => {
+    console.log("Running on Port " + port);
+})
