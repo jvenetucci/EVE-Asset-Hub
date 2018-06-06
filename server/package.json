@@ -16,6 +16,8 @@
   },
   "homepage": "https://github.com/EVEPotatoPotaato/EVE-Asset-Hub#readme",
   "dependencies": {
+    "axios": "^0.18.0",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "request": "^2.86.0"
   }

@@ -1,5 +1,5 @@
-module.exports = function(server, db) {
-    server.get('/callback', (req, res) => {
-        res.send('This is the callback endpoint')
-      });
+module.exports = function(server) {
+    server.get('/hello', (req, res) => {
+        res.send('Hello!')
+    });
 };
