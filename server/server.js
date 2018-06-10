@@ -2,6 +2,7 @@ const express = require('express');
 const request = require('request');
 const path = require('path');
 const axios = require('axios');
+const uniqid = require('uniqid');
 // const cors = require('cors')
 
 const server = express();
@@ -84,6 +85,7 @@ async function grabItems() {
         items.forEach(async item => {
 
             var owner = x.Name;
+            var UID = uniqid();
 
             var itemName = typeIDDictionary.get(item.type_id);
             if (itemName == undefined) {
@@ -108,6 +110,7 @@ async function grabItems() {
             }
 
             itemObject = {
+                "UID": UID,
                 "Owner": owner,
                 "Name": itemName,
                 "Quantity": quantity,
