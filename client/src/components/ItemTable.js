@@ -17,7 +17,7 @@ class ItemTable extends Component {
                   <th>Location Type</th>
                   <th>Owner</th>
                 </tr>
-                {this.props.itemList.map(((item, index) => (<Item key={index} item={item}/>)))}
+                {this.props.itemList.map(((item) => (<Item key={item.UID} item={item}/>)))}
               </tbody>
             </table>
           </div>
