@@ -4,7 +4,6 @@ class Item extends Component {
 
     render() {
         if (this.props.item !== undefined) {
-            console.log(this.props.item);
             return(
                 <tr className='Item'>
                     <td>{this.props.item.Name}</td>

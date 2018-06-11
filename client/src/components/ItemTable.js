@@ -4,7 +4,7 @@ import Item from './Item';
 class ItemTable extends Component {
 
   render() {
-      if (this.props.itemList) {
+      if (this.props.filterList) {
         return (
           <div>
             <table className="ItemTable">
@@ -17,7 +17,7 @@ class ItemTable extends Component {
                   <th>Location Type</th>
                   <th>Owner</th>
                 </tr>
-                {this.props.itemList.map(((item, index) => (<Item key={index} item={item}/>)))}
+                {this.props.filterList.map((item => (<Item key={item.UID} item={item}/>)))}
               </tbody>
             </table>
           </div>

@@ -13,7 +13,8 @@ class App extends Component {
     super(props);
     this.state = {
       characters: [],
-      itemList: []
+      itemList: [],
+      filterList: null
     }
 
     this.searchItems = this.searchItems.bind(this);
@@ -25,15 +26,13 @@ class App extends Component {
   async componentWillMount() {
     await this.getCharacters();
     await this.getItems();
-    // this.setState(this.state);
   }
 
   searchItems(searchTerm) {
     var newState = this.state;
-    console.log(newState)
     var options = {
       shouldSort: true,
-      includeScore: true,
+      includeScore: false,
       threshold: 0.4,
       location: 0,
       distance: 100,
@@ -46,8 +45,7 @@ class App extends Component {
       ]
     };
     var fuse = new Fuse(newState.itemList, options);
-    newState.itemList = fuse.search(searchTerm);
-    console.log(newState);
+    newState.filterList = fuse.search(searchTerm);
     this.setState(newState);
   }
 
@@ -68,7 +66,7 @@ class App extends Component {
             <SearchBar callback={this.searchItems}/>
             <Buttons.ResetButton callback={this.resetItems}/>
           </div>
-          <ItemTable itemList={this.state.itemList}/>
+          <ItemTable filterList={this.state.filterList}/>
         </div>
 
         <div className="Footer">
@@ -86,7 +84,6 @@ class App extends Component {
     var currentState = this.state;
     currentState.characters = res.data;
     this.setState(currentState);
-    // this.state.characters = res.data;
   }
 
   async getItems() {
@@ -96,8 +93,8 @@ class App extends Component {
     })
     var currentState = this.state;
     currentState.itemList = res.data;
+    currentState.filterList = currentState.itemList;
     this.setState(currentState);
-    // this.state.itemList = res.data
   }
 
 
