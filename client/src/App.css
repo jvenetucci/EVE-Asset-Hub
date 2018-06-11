@@ -14,7 +14,7 @@ body {
     margin-left: 10px;
 }
 
-#ToolBarSearch {
+#ToolBarSearch, #Export{
     display: inline;
     border: 3px solid black;
     padding: 5px;

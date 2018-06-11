@@ -4,9 +4,11 @@ import './App.css';
 import Buttons from './components/Buttons'
 import ItemTable from './components/ItemTable'
 import SearchBar from './components/SearchBar'
+import Export from './components/Export'
 
 import axios from "axios";
-import Fuse from "fuse.js"
+import Fuse from "fuse.js";
+import json2csv from "json2csv";
 
 class App extends Component {
   constructor(props) {
@@ -22,6 +24,7 @@ class App extends Component {
     this.getItems = this.getItems.bind(this);
     this.resetItems = this.resetItems.bind(this);
     this.refreshItems = this.refreshItems.bind(this);
+    this.exportCSV = this.exportCSV.bind(this);
   }
 
   async componentWillMount() {
@@ -60,6 +63,31 @@ class App extends Component {
     this.getItems();
   }
 
+  exportCSV(option) {
+    var csv = null;
+    var fields = [{
+        label: "Item",
+        value: "Name"
+      }, 'Quantity', 'LocName', 'LocFlag', 'LocType', 'Owner'
+    ];
+
+    try {
+      if (option === 'true') {
+        csv = (json2csv.parse(this.state.itemList, {fields}))
+      } else {
+        csv = (json2csv.parse(this.state.filterList, {fields}))
+      }
+  
+      var link = document.createElement('a');
+      link.setAttribute('href', 'data:text/csv;charset=ETF-8,' + encodeURI(csv));
+      link.setAttribute('download', 'assets');
+      link.click();
+    } catch (err) {
+      alert("Error trying to create CSV. See console for details");
+      console.log(err);
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -75,6 +103,7 @@ class App extends Component {
               <Buttons.ResetButton callback={this.resetItems}/>
               <Buttons.RefreshButton callback={this.refreshItems}/>
             </div>
+            <Export callback={this.exportCSV} />
           </div>
           <ItemTable filterList={this.state.filterList}/>
         </div>
@@ -109,7 +138,5 @@ class App extends Component {
 
 
 }
-
-  
 
 export default App;
