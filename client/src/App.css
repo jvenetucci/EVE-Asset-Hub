@@ -9,7 +9,7 @@ body {
     margin-bottom: 20px;
 }
 
-#SearchBar, #ResetButton, #RefreshButton {
+#SearchBar, #ResetButton, #RefreshButton, #SearchButton{
     display: inline;
     margin-left: 10px;
 }
