@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import AddCharacterButton from './components/Buttons'
+import Buttons from './components/Buttons'
 import ItemTable from './components/ItemTable'
 import SearchBar from './components/SearchBar'
 
@@ -19,6 +19,7 @@ class App extends Component {
     this.searchItems = this.searchItems.bind(this);
     this.getCharacters = this.getCharacters.bind(this);
     this.getItems = this.getItems.bind(this);
+    this.resetItems = this.resetItems.bind(this);
   }
 
   async componentWillMount() {
@@ -50,6 +51,10 @@ class App extends Component {
     this.setState(newState);
   }
 
+  resetItems() {
+    this.getItems()
+  }
+
   render() {
     return (
       <div className="App">
@@ -59,8 +64,9 @@ class App extends Component {
 
         <div className="MainContent">
           <div className="ToolBar">
-            <AddCharacterButton />
+            <Buttons.AddCharacterButton />
             <SearchBar callback={this.searchItems}/>
+            <Buttons.ResetButton callback={this.resetItems}/>
           </div>
           <ItemTable itemList={this.state.itemList}/>
         </div>

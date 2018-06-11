@@ -9,11 +9,14 @@ body {
     margin-bottom: 20px;
 }
 
-#SearchBar {
+#SearchBar, #ResetButton {
     display: inline;
     margin-left: 10px;
-    border: 3px solid black;
     padding: 5px;
+}
+
+#SearchBar {
+    border: 3px solid black;
 }
 
 .Footer {

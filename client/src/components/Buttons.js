@@ -11,4 +11,24 @@ class AddCharacterButton extends Component {
   }
 }
 
-export default AddCharacterButton;
+class ResetButton extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+      event.preventDefault()
+      this.props.callback()
+  }
+
+  render() {
+      return(
+          <form id="ResetButton" onSubmit={this.handleSubmit}>
+              <input type="submit" value="Reset" />
+          </form>
+      )}
+}
+
+export default {AddCharacterButton, ResetButton};
