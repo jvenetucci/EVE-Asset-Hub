@@ -21,6 +21,7 @@ class App extends Component {
     this.getCharacters = this.getCharacters.bind(this);
     this.getItems = this.getItems.bind(this);
     this.resetItems = this.resetItems.bind(this);
+    this.refreshItems = this.refreshItems.bind(this);
   }
 
   async componentWillMount() {
@@ -50,7 +51,13 @@ class App extends Component {
   }
 
   resetItems() {
-    this.getItems()
+    var newState = this.state;
+    newState.filterList = newState.itemList;
+    this.setState(newState);
+  }
+
+  refreshItems() {
+    this.getItems();
   }
 
   render() {
@@ -63,8 +70,11 @@ class App extends Component {
         <div className="MainContent">
           <div className="ToolBar">
             <Buttons.AddCharacterButton />
-            <SearchBar callback={this.searchItems}/>
-            <Buttons.ResetButton callback={this.resetItems}/>
+            <div id="ToolBarSearch">
+              <SearchBar callback={this.searchItems}/>
+              <Buttons.ResetButton callback={this.resetItems}/>
+              <Buttons.RefreshButton callback={this.refreshItems}/>
+            </div>
           </div>
           <ItemTable filterList={this.state.filterList}/>
         </div>
