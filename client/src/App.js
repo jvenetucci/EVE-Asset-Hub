@@ -17,12 +17,14 @@ class App extends Component {
     }
 
     this.searchItems = this.searchItems.bind(this);
+    this.getCharacters = this.getCharacters.bind(this);
+    this.getItems = this.getItems.bind(this);
   }
 
   async componentWillMount() {
     await this.getCharacters();
     await this.getItems();
-    this.setState(this.state);
+    // this.setState(this.state);
   }
 
   searchItems(searchTerm) {
@@ -75,15 +77,21 @@ class App extends Component {
         method: 'get',
         url: '/getCharacters'
     })
-    this.state.characters = res.data;
+    var currentState = this.state;
+    currentState.characters = res.data;
+    this.setState(currentState);
+    // this.state.characters = res.data;
   }
 
   async getItems() {
     var res = await axios({
       method: 'get',
       url: '/getItems'
-  })
-  this.state.itemList = (res.data)
+    })
+    var currentState = this.state;
+    currentState.itemList = res.data;
+    this.setState(currentState);
+    // this.state.itemList = res.data
   }
 
 

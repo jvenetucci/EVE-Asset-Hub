@@ -60,13 +60,16 @@ server.get('/callback', async (req, res) => {
         "AccessToken": tokens.access_token
     }
 
-    characters.push(charObject)
-    console.log("Added the following character: ");
-    console.log(charObject)
-
-    console.log("Characters now include: ");
-    console.log(characters)
+    if (characterExists(charObject.ID)) {
+        console.log("Character " + charObject.Name + " already exists!")
+    } else {
+        characters.push(charObject)
+        console.log("Added the following character: ");
+        console.log(charObject)
     
+        console.log("Characters now include: ");
+        console.log(characters)
+    }
     await grabItems()
     res.redirect('http://localhost:3000')
 });
@@ -120,8 +123,8 @@ async function grabItems() {
             }
             itemList.push(itemObject);
         })
-        console.log("Successfully grabbed asset list for " + characters.length + " character(s)");
     })
+    console.log("Successfully grabbed asset list for " + characters.length + " character(s)");
 }
 
 async function lookupTypeID(typeID) {
@@ -132,11 +135,11 @@ async function lookupTypeID(typeID) {
             method: 'get',
             url: address
         })
+        typeIDDictionary.set(typeID, res.data.name)
     } catch (err) {
-        console.log(err)
+        console.log("Caught Error: Encountered a problem fetching Type ID");
+        lookupTypeID(typeID);
     }
-
-    typeIDDictionary.set(typeID, res.data.name)
 }
 
 async function lookupSolarID(locationID) {
@@ -147,11 +150,11 @@ async function lookupSolarID(locationID) {
             method: 'get',
             url: address
         })
+        locationIDDictionary.set(locationID, res.data.name);
     } catch (err) {
-        console.log(err)
+        console.log("Caught Error: Encountered a problem fetching SOLAR ID")
+        lookupSolarID(locationID);
     }
-
-    locationIDDictionary.set(locationID, res.data.name)
 }
 
 async function lookupStationID(locationID) {
@@ -162,11 +165,11 @@ async function lookupStationID(locationID) {
             method: 'get',
             url: address
         })
+        locationIDDictionary.set(locationID, res.data.name)
     } catch (err) {
-        console.log(err)
+        console.log("Caught Error: Encountered a problem fetching STATION ID");
+        lookupStationID(locationID);
     }
-
-    locationIDDictionary.set(locationID, res.data.name)
 }
 
 server.get('/getCharacters', (req, res) => {
@@ -185,3 +188,12 @@ server.get('/refresh', async (req, res) => {
 server.listen(port, () => {
     console.log("Running on Port " + port);
 })
+
+function characterExists(characterID) {
+    for (var i = 0; i < characters.length; i++) {
+        if (characters[i].ID == characterID) {
+            return true;
+        }
+    }
+    return false;
+}
