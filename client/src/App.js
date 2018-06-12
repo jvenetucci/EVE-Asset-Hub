@@ -36,8 +36,8 @@ class App extends Component {
     var newState = this.state;
     var options = {
       shouldSort: true,
-      includeScore: false,
-      threshold: 0.4,
+      tokenize: true,
+      threshold: 0.1,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
@@ -46,7 +46,7 @@ class App extends Component {
         "Name",
         "Owner",
         "LocName"
-      ]
+    ]
     };
     var fuse = new Fuse(newState.itemList, options);
     newState.filterList = fuse.search(searchTerm);
