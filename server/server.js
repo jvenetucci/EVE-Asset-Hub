@@ -3,6 +3,11 @@
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
 
+// This is the main file that runs the server.
+// Included in this file is the server set up and
+// all of its routes plus helper functions
+
+
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
@@ -11,22 +16,42 @@ const uniqid = require('uniqid');
 const server = express();
 const port = 3001;
 
-require('./routes/index')(server);
-require('./routes/route')(server);
-
+// Holds the characters, items
 var characters = []
 var itemList = []
 
+// Quick mappings from ID to Name
 var typeIDDictionary = new Map();
 var locationIDDictionary = new Map();
 
+// *** SERVER SETUP ***
 server.use(express.static(__dirname + '/public'));
 
+server.listen(port, () => {
+    console.log("Running on Port " + port);
+})
+
+
+// *** ROUTES ***
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 })
 
+// GET endpoint that returns the character list
+server.get('/getCharacters', (req, res) => {
+    res.send(characters);
+})
+
+// GET endpoint that returns the item list
+server.get('/getItems', (req, res) => {
+    res.send(itemList);
+})
+
+// GET endpoint that is responsible for handling the EVE SSO
+// This is the endpoint the EVE SSO redirects and sends an authorization code to.
+// This endpoints main job is to grab an access token, character information, and asset list for that character
 server.get('/callback', async (req, res) => {
+    // Grab an access token from the auth code
     var body = {
         "grant_type":"authorization_code",
         "code":req.query.code
@@ -41,9 +66,11 @@ server.get('/callback', async (req, res) => {
             headers: {'Content-Type':'application/json', 'Authorization':AuthHeader}
         })
     } catch(err) {
-        console.log(err)
+        console.log("Error trying to obtain access token:");
+        console.log(err);
     }
 
+    // Now we have the tokens, grab the character data
     var tokens = response.data;
 
     try {
@@ -53,7 +80,8 @@ server.get('/callback', async (req, res) => {
             headers: {'Authorization':'Bearer ' + tokens.access_token}
         })
     } catch(err) {
-        console.log(err)
+        console.log("Error trying to grab character data: ");
+        console.log(err);
     }
 
     var charObject = {
@@ -62,6 +90,8 @@ server.get('/callback', async (req, res) => {
         "AccessToken": tokens.access_token
     }
 
+
+    // Check if this is a character the server already holds
     if (characterExists(charObject.ID)) {
         console.log("Character " + charObject.Name + " already exists!")
     } else {
@@ -72,12 +102,20 @@ server.get('/callback', async (req, res) => {
         console.log("Characters now include: ");
         console.log(characters)
     }
+
+    // Grab a current list of all characters and redirect to the client.
     await grabItems()
     res.redirect('http://localhost:3000')
 });
 
+// *** HELPER FUNCTIONS ***
+
+// This function is responsible for grabbing and translating the asset lists of all characters
+// currently stored in the characters variable.
+// Populates the itemList variable with a JSON list of assets
 async function grabItems() {
     itemList = [];
+    // For each character, grab their asset list
     characters.forEach(async x => {
         var address = "https://esi.evetech.net/latest/characters/" + x.ID + "/assets/?datasource=tranquility&page=1&token=" + x.AccessToken
 
@@ -86,6 +124,7 @@ async function grabItems() {
             url: address
         })
 
+        // For each item, translate the ID's to names. Build a new item object from this info.
         items = res.data;
         items.forEach(async item => {
 
@@ -93,7 +132,7 @@ async function grabItems() {
             var UID = uniqid();
 
             var itemName = typeIDDictionary.get(item.type_id);
-            if (itemName == undefined) {
+            if (itemName == undefined) {    // If the ID isn't cached we need to retrieve it from ESI
                 await lookupTypeID(item.type_id);
                 itemName = typeIDDictionary.get(item.type_id)
             }
@@ -102,7 +141,7 @@ async function grabItems() {
             var locFlag = item.location_flag;
             var locType = item.location_type;
             var locName = locationIDDictionary.get(item.location_id);
-            if (locName == undefined) {
+            if (locName == undefined) {     // Same caching deal here
                 if (locType == 'station') {
                     await lookupStationID(item.location_id);
                     locName = locationIDDictionary.get(item.location_id);
@@ -114,6 +153,7 @@ async function grabItems() {
                 }
             }
 
+            // Build a new item object from this info.
             itemObject = {
                 "UID": UID,
                 "Owner": owner,
@@ -123,12 +163,15 @@ async function grabItems() {
                 "LocType": locType,
                 "LocName": locName
             }
+
+            // Add the new item to the item list
             itemList.push(itemObject);
         })
     })
     console.log("Successfully grabbed asset list for " + characters.length + " character(s)");
 }
 
+// Translates a type ID to a name and caches it
 async function lookupTypeID(typeID) {
     var address = "https://esi.evetech.net/latest/universe/types/" + typeID + "/?datasource=tranquility&language=en-us"
 
@@ -144,6 +187,7 @@ async function lookupTypeID(typeID) {
     }
 }
 
+// Translates a solar ID to a name and caches it
 async function lookupSolarID(locationID) {
     var address = "https://esi.evetech.net/latest/universe/systems/" + locationID + "/?datasource=tranquility&language=en-us/"
 
@@ -159,6 +203,7 @@ async function lookupSolarID(locationID) {
     }
 }
 
+// Translates a station ID to a name and caches it
 async function lookupStationID(locationID) {
     var address = "https://esi.evetech.net/latest/universe/stations/" + locationID + "/?datasource=tranquility"
 
@@ -174,18 +219,7 @@ async function lookupStationID(locationID) {
     }
 }
 
-server.get('/getCharacters', (req, res) => {
-    res.send(characters);
-})
-
-server.get('/getItems', (req, res) => {
-    res.send(itemList);
-})
-
-server.listen(port, () => {
-    console.log("Running on Port " + port);
-})
-
+// Checks to see if a character is already stored by the server based on its character ID
 function characterExists(characterID) {
     for (var i = 0; i < characters.length; i++) {
         if (characters[i].ID == characterID) {
