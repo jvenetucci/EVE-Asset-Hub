@@ -1,5 +1,5 @@
 # EVE-Asset-Hub
-Copyright (c) 2018 Potato Potaato
+Copyright (c) 2018 Potato Potaato (EVE.Potato.Potaato@gmail.com)
 ## Overview
 EVEAssetHub is a tool that provides an overview of the assets owned across multiple EVE Online characters. The tool is intended to be a web app.
 
