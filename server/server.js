@@ -1,3 +1,8 @@
+// Copyright (c) 2018 Potato Potaato
+// [This program is licensed under the "MIT License"]
+// Please see the file LICENSE.md in the
+// source distribution of this software for license terms.
+
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
