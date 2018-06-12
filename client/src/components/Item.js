@@ -3,6 +3,9 @@
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
 
+// This file contains the definitions for the component that transforms
+//  a JSON asset into a table row representation.
+
 import React, { Component } from 'react';
 
 class Item extends Component {

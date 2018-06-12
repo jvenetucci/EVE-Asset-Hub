@@ -3,10 +3,12 @@
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
 
+// This file contains the definitions for various button components in the web app
+
 import React, { Component } from 'react';
 
+// This button directs the user to the EVE SSO
 class AddCharacterButton extends Component {
-
   render() {
     return (
       <div className="AddCharButton">
@@ -16,6 +18,8 @@ class AddCharacterButton extends Component {
   }
 }
 
+// This button resets the current asset list view
+// Uses the resetItems() function in App.js
 class ResetButton extends Component {
   constructor(props) {
     super(props)
@@ -36,6 +40,8 @@ class ResetButton extends Component {
       )}
 }
 
+// This button grabs the current asset list from the server
+// Uses the getItems() function in App.js 
 class RefreshButton extends Component {
   constructor(props) {
     super(props)

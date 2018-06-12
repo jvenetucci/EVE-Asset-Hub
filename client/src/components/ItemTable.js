@@ -3,11 +3,13 @@
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
 
+
+// This file contains the definitions for the component that makes up the asset list table
+
 import React, { Component } from 'react';
 import Item from './Item';
 
 class ItemTable extends Component {
-
   render() {
       if (this.props.filterList) {
         return (
@@ -22,6 +24,7 @@ class ItemTable extends Component {
                   <th>Location Type</th>
                   <th>Owner</th>
                 </tr>
+                {/* The code below takes each item and creates a table row out of it using Item.js */}
                 {this.props.filterList.map((item => (<Item key={item.UID} item={item}/>)))}
               </tbody>
             </table>

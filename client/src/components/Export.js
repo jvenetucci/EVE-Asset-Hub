@@ -3,6 +3,10 @@
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
 
+// This file contains the definitions for the component that
+//  lets the user export the table to csv
+
+
 import React, { Component } from 'react';
 
 class Export extends Component {
@@ -16,17 +20,20 @@ class Export extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    // If the button is pushed, call the function
+    //  exportCVS() in App.js
+    // Passes the option of current or full view
     handleSubmit(event) {
         event.preventDefault()
         this.props.callback(this.state.option)
     }
 
+    // Update the state to reflect which radio button is currently pushed.
     handleChange(event) {
         this.setState({
             option: event.target.value
         })
     }
-
 
     render() {
         return(
