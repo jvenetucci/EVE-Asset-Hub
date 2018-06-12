@@ -64,8 +64,15 @@ class App extends Component {
     this.setState(newState);
   }
 
-  refreshItems() {
-    this.getItems();
+  async refreshItems() {
+    var res = await axios({
+      method: 'get',
+      url: '/refresh'
+    })
+    var currentState = this.state;
+    currentState.itemList = res.data;
+    currentState.filterList = currentState.itemList;
+    this.setState(currentState);
   }
 
   exportCSV(option) {
@@ -140,7 +147,6 @@ class App extends Component {
     currentState.filterList = currentState.itemList;
     this.setState(currentState);
   }
-
 
 }
 
