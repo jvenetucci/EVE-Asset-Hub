@@ -2,9 +2,11 @@
   "name": "eve-asset-hub",
   "version": "0.0.1",
   "description": "An asset manager for the game EVE Online",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "run": "nodemon server.js"
   },
   "repository": {
     "type": "git",
