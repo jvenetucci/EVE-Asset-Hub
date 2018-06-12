@@ -1,3 +1,5 @@
+This is the README file for react apps created with create-react-app. If you're looking for the README for EVE Asset Hub you need to go to the parent directory of this current directory.
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
