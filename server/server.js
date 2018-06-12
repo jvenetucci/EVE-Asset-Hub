@@ -1,9 +1,7 @@
 const express = require('express');
-const request = require('request');
 const path = require('path');
 const axios = require('axios');
 const uniqid = require('uniqid');
-// const cors = require('cors')
 
 const server = express();
 const port = 3001;
@@ -18,7 +16,6 @@ var typeIDDictionary = new Map();
 var locationIDDictionary = new Map();
 
 server.use(express.static(__dirname + '/public'));
-// server.use(cors());
 
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
