@@ -28,7 +28,6 @@ class App extends Component {
     this.getCharacters = this.getCharacters.bind(this);
     this.getItems = this.getItems.bind(this);
     this.resetItems = this.resetItems.bind(this);
-    this.refreshItems = this.refreshItems.bind(this);
     this.exportCSV = this.exportCSV.bind(this);
   }
 
@@ -64,17 +63,6 @@ class App extends Component {
     this.setState(newState);
   }
 
-  async refreshItems() {
-    var res = await axios({
-      method: 'get',
-      url: '/refresh'
-    })
-    var currentState = this.state;
-    currentState.itemList = res.data;
-    currentState.filterList = currentState.itemList;
-    this.setState(currentState);
-  }
-
   exportCSV(option) {
     var csv = null;
     var fields = [{
@@ -100,6 +88,14 @@ class App extends Component {
     }
   }
 
+  refreshButtonMessage() {
+    if (((this.state.characters.length > 0) && (this.state.itemList.length === 0))) {
+      return (
+        <p>Just added a character but see no assets? Wait a few seconds and then push the Refresh button!</p>
+      )
+    } else return null
+  }
+
   render() {
     return (
       <div className="App">
@@ -113,11 +109,12 @@ class App extends Component {
             <div id="ToolBarSearch">
               <SearchBar callback={this.searchItems}/>
               <Buttons.ResetButton callback={this.resetItems}/>
-              <Buttons.RefreshButton callback={this.refreshItems}/>
+              <Buttons.RefreshButton callback={this.getItems}/>
             </div>
             <Export callback={this.exportCSV} />
           </div>
           <ItemTable filterList={this.state.filterList}/>
+          {this.refreshButtonMessage()}
         </div>
 
         <div className="Footer">

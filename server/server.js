@@ -182,11 +182,6 @@ server.get('/getItems', (req, res) => {
     res.send(itemList);
 })
 
-server.get('/refresh', async (req, res) => {
-    await grabItems();
-    console.log("Refreshed Item List");
-})
-
 server.listen(port, () => {
     console.log("Running on Port " + port);
 })
