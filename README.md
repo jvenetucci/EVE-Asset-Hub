@@ -51,14 +51,14 @@ EVE Asset Hub was made with Javascript and contains client and server side porti
 Running the app requires the setup of both the client and server. Each is a two step process. First required pakages must be installed and then the server/client needs to run. This process requires that you have two shells open; one for running the server and another for the client. Starting with the server, do the following to build and run it:
 
 ```terminal
-$ cd /server
+$ cd server/
 $ npm install
 $ npm start
 ```
 
 In your other shell do the following to run the client:
 ```terminal
-$ cd /client
+$ cd client/
 $ npm install
 $ npm start
 ```
