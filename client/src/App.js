@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Potato Potaato
+// Copyright (c) 2018 Joseph Venetucci
 // [This program is licensed under the "MIT License"]
 // Please see the file LICENSE.md in the
 // source distribution of this software for license terms.
@@ -65,7 +65,7 @@ class App extends Component {
         </div>
 
         <div className="Footer">
-          Potato Potaato - 2018 - Licensed under the MIT License
+          Joseph Venetucci - 2018 - Licensed under the MIT License
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 {
   "name": "eve-asset-hub",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An asset manager for the game EVE Online",
   "main": "server.js",
   "scripts": {
@@ -10,13 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EVEPotatoPotaato/EVE-Asset-Hub.git"
+    "url": "git+https://github.com/jvenetucci/EVE-Asset-Hub.git"
   },
-  "author": "Potato Potaato",
+  "author": "Joseph Venetucci",
   "bugs": {
-    "url": "https://github.com/EVEPotatoPotaato/EVE-Asset-Hub/issues"
+    "url": "https://github.com/jvenetucci/EVE-Asset-Hub/issues"
   },
-  "homepage": "https://github.com/EVEPotatoPotaato/EVE-Asset-Hub#readme",
+  "homepage": "https://github.com/jvenetucci/EVE-Asset-Hub#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "express": "^4.16.3",
