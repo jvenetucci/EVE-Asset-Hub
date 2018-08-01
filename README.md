@@ -1,5 +1,5 @@
 # EVE-Asset-Hub
-Copyright (c) 2018 Potato Potaato (EVE.Potato.Potaato@gmail.com)
+Copyright (c) 2018 Joseph Venetucci (venetuc@pdx.edu)
 ## Overview
 EVEAssetHub is a tool that provides an overview of the assets owned across multiple EVE Online characters. The tool is intended to be a web app.
 
@@ -38,6 +38,8 @@ EVE Asset Hub was created fully in Javascript, using the React framework for the
     - Location
     - Owner
 - The list can be exported as a CSV file for use in another application. Either the current search results or the entire list can be exported.
+
+![Screenshot of App](screenshot.png)
 
 ---
 
